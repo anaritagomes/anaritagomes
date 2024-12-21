@@ -7,7 +7,7 @@ I love Python and Data, although I have worked with a broader stack (Java, Ruby,
 
 I know my ways around SQL, NoSQL, NumPy, SciPy, Scikit-Learn, Pandas, Polars, GIT, CI/CD, Docker, JIRA and Agile.
 
-You'd probably find this Github not so populated, because my main contributions are privately held.
+You'll probably find this Github not so populated, because my main contributions are privately held.
 
 <!--p>
   <a href="https://waylonwalker.com/latest"><img width="400" align='right' src="https://waylonwalker.com/latest.png?raw=true"></a>
