@@ -41,7 +41,7 @@ You'll probably find this Github not so populated, because my main contributions
 ## Professional Experience
 
 <a href='https://www.fz-juelich.de/en'>
-    Data Analyst and Software Engineer @ Forschungszentrum Jülich | Jülich, Germany
+    Software Engineer and Technical Lead @ Forschungszentrum Jülich | Jülich, Germany
 </a>
 
 
