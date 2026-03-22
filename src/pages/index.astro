@@ -1,0 +1,103 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const articles = (await getCollection('articles', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+
+const projects = (await getCollection('projects'))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+
+const base = import.meta.env.BASE_URL;
+---
+
+<Base title="Ana Rita Gomes — Knowledge Architect">
+  <!-- Hero -->
+  <section class="pt-28 pb-24 max-w-[70ch]">
+    <p class="font-mono text-[#c0392b] text-sm mb-6 tracking-wide uppercase">
+      Knowledge Architecture · Technical Writing · Systems Engineering
+    </p>
+    <h1 class="text-4xl font-semibold text-[#e8e8f0] leading-tight mb-8">
+      Ana Rita Gomes
+    </h1>
+    <p class="text-[#e8e8f0] text-xl leading-relaxed mb-6">
+      I build documentation systems that function like infrastructure — scalable, governed, and designed to reduce operational load rather than create it.
+    </p>
+    <p class="text-[#6b6b80] text-base leading-relaxed mb-10">
+      Eight years as a software engineer before moving into knowledge work. MSc in AI from Leeds. Currently leading documentation governance across a multi-product organisation at Constellation Automotive Group — managing a knowledge base of ~2,000 articles, building automation pipelines, and designing the frameworks that make sustainable documentation possible at scale.
+    </p>
+    <div class="flex gap-4 flex-wrap">
+      <a
+        href={`${base}/projects`}
+        class="inline-block bg-[#c0392b] text-[#e8e8f0] text-sm font-medium px-5 py-2.5 hover:bg-[#8b2b20] transition-colors"
+      >
+        View projects
+      </a>
+      <a
+        href={`${base}/cv`}
+        class="inline-block border border-[#1e1e2a] text-[#6b6b80] text-sm font-medium px-5 py-2.5 hover:border-[#6b6b80] hover:text-[#e8e8f0] transition-colors"
+      >
+        Download CV
+      </a>
+    </div>
+  </section>
+
+  <!-- Divider -->
+  <div class="border-t border-[#1e1e2a] mb-20"></div>
+
+  <!-- Recent articles -->
+  {articles.length > 0 && (
+    <section class="mb-20">
+      <div class="flex items-baseline justify-between mb-10">
+        <h2 class="text-xs font-mono uppercase tracking-widest text-[#6b6b80]">Recent articles</h2>
+        <a href={`${base}/articles`} class="text-xs text-[#c0392b] hover:underline font-mono">All articles →</a>
+      </div>
+      <div class="flex flex-col gap-10">
+        {articles.map((a) => {
+          const formatted = a.data.date.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
+          return (
+            <div class="group">
+              <a href={`${base}/articles/${a.id}`} class="no-underline">
+                <h3 class="text-[#e8e8f0] font-medium mb-1 group-hover:text-[#c0392b] transition-colors">
+                  {a.data.title}
+                </h3>
+              </a>
+              <p class="text-[#6b6b80] text-sm mb-2 leading-relaxed max-w-[60ch]">{a.data.description}</p>
+              <span class="font-mono text-xs text-[#6b6b80]">{formatted}</span>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  )}
+
+  <!-- Recent projects -->
+  {projects.length > 0 && (
+    <section class="mb-20">
+      <div class="flex items-baseline justify-between mb-10">
+        <h2 class="text-xs font-mono uppercase tracking-widest text-[#6b6b80]">Selected work</h2>
+        <a href={`${base}/projects`} class="text-xs text-[#c0392b] hover:underline font-mono">All projects →</a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {projects.map((p) => (
+          <a
+            href={`${base}/projects/${p.id}`}
+            class="block border border-[#1e1e2a] p-6 hover:border-[#c0392b]/40 transition-colors group no-underline"
+          >
+            <h3 class="text-[#e8e8f0] font-medium mb-2 group-hover:text-[#c0392b] transition-colors">
+              {p.data.title}
+            </h3>
+            <p class="text-[#6b6b80] text-sm leading-relaxed mb-4">{p.data.description}</p>
+            <div class="flex gap-2 flex-wrap">
+              {p.data.tags.map((t) => (
+                <span class="font-mono text-xs text-[#6b6b80] border border-[#1e1e2a] px-2 py-0.5">{t}</span>
+              ))}
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+</Base>

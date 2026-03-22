@@ -1,0 +1,98 @@
+---
+export interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description = 'Ana Rita Gomes — Knowledge Architect' } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      html, body {
+        background-color: #0a0a0f;
+        color: #e8e8f0;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: 'Inter', system-ui, sans-serif;
+        min-height: 100vh;
+        background-image: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.04) 1px,
+          transparent 1px
+        );
+        background-size: 28px 28px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="border-b border-[#1e1e2a]">
+      <div class="max-w-[900px] mx-auto px-6 flex items-center justify-between h-14">
+        <a
+          href={base}
+          class="font-mono text-sm text-[#e8e8f0] hover:text-[#c0392b] transition-colors no-underline"
+        >
+          anaritagomes
+        </a>
+        <div class="flex gap-8">
+          <a href={`${base}/articles`} class="nav-link">Articles</a>
+          <a href={`${base}/projects`} class="nav-link">Projects</a>
+          <a href={`${base}/cv`} class="nav-link">CV</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="max-w-[900px] mx-auto px-6">
+      <slot />
+    </main>
+
+    <footer class="border-t border-[#1e1e2a] mt-32">
+      <div class="max-w-[900px] mx-auto px-6 py-8 flex items-center justify-between">
+        <span class="text-[#6b6b80] text-sm font-mono">Ana Rita Gomes</span>
+        <div class="flex gap-6">
+          <a
+            href="https://github.com/anaritagomes"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-[#6b6b80] text-sm hover:text-[#e8e8f0] transition-colors"
+          >GitHub</a>
+          <a
+            href="https://linkedin.com/in/anaritagomes"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-[#6b6b80] text-sm hover:text-[#e8e8f0] transition-colors"
+          >LinkedIn</a>
+        </div>
+      </div>
+    </footer>
+
+    <style>
+      .nav-link {
+        color: #6b6b80;
+        font-size: 0.875rem;
+        text-decoration: none;
+        transition: color 0.15s;
+      }
+      .nav-link:hover {
+        color: #e8e8f0;
+      }
+    </style>
+  </body>
+</html>

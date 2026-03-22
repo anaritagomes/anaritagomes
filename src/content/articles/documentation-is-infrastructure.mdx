@@ -1,0 +1,58 @@
+---
+title: "Documentation is infrastructure, not a service"
+date: 2024-11-12
+description: "Most organisations treat documentation as a support function — something produced on request, maintained informally, and deprioritised when timelines slip. That framing is wrong, and the cost shows up in ways that are hard to measure until they aren't."
+tags: ["knowledge ops", "governance", "systems thinking"]
+---
+
+Most organisations treat documentation as a support function — something produced on request, maintained informally, and deprioritised when timelines slip. That framing is wrong, and the cost shows up in ways that are hard to measure until they aren't.
+
+I've been working inside that problem for the past two years. Managing a knowledge base of roughly 2,000 articles across 10 products, built incrementally over time by different teams with different standards, different tooling instincts, and no shared ownership model. The content exists. The access patterns exist. What doesn't exist — what almost never exists in organisations at this stage — is a system.
+
+## What infrastructure actually means
+
+When engineers talk about infrastructure, they mean the things that other things depend on. Not the product itself — the substrate the product runs on. Reliable, versioned, observable, with defined failure modes and recovery paths.
+
+Documentation should work the same way.
+
+A knowledge base isn't a collection of articles. It's a dependency graph. When a product changes, the articles that describe that product need to update — not eventually, not when someone remembers — as part of the same release process. When a process changes, the documentation that supports that process becomes a liability the moment it diverges. The longer the divergence runs, the more expensive the correction.
+
+This is infrastructure logic. The documentation system either keeps pace with the systems it describes, or it accumulates debt.
+
+## Where the informal model breaks down
+
+The informal model — where documentation is maintained by whoever wrote it, updated when someone notices it's wrong, and governed by goodwill — works at small scale. It breaks at medium scale in predictable ways:
+
+**Orphaned content.** Articles that described features or processes that no longer exist, still discoverable, still being read. No mechanism to detect or retire them.
+
+**Version drift.** Documentation that reflects the state of the product at the time of writing, with no linkage to subsequent changes. The product moved; the documentation didn't.
+
+**Tribal knowledge gaps.** Processes that work in practice because the person who runs them has the undocumented context in their head. When that person leaves, the documented version doesn't work.
+
+**No ownership at scale.** When everyone is responsible for documentation, no one is. Escalation paths for quality issues don't exist. There's nowhere for a reader to report that something is wrong that leads to it being fixed.
+
+## A minimum viable governance model
+
+I've been designing what I'm calling a Minimum Viable Governance framework for this context — the smallest set of structures that converts an informal documentation system into a managed one, without requiring a large team or a complete process overhaul.
+
+The core components:
+
+**Ownership mapping.** Every article has a named owner. Not a team — a person. The owner is responsible for accuracy, not necessarily the writing. This is the minimum viable unit of accountability.
+
+**Change coupling.** Documentation updates are part of the definition of done for product and process changes. Not a follow-up task — a release gate. The coupling mechanism varies by team and toolchain, but the principle doesn't.
+
+**Review cadence.** Content that hasn't been reviewed in a defined window is flagged. Not deleted — flagged, with the owner notified. The cadence should match the rate of change of the content domain. Stable reference documentation can tolerate longer cycles; operational process documentation can't.
+
+**Fitness metrics.** Search terms that return no results, articles with high view counts and low satisfaction signals, content with no inbound links. These are proxies for documentation debt that can be measured without manual audit.
+
+None of these are novel. They're standard practices in software systems management applied to a knowledge management context. The difficulty isn't the ideas — it's the organisational change required to implement them in a function that isn't usually treated as a system.
+
+## The reframing problem
+
+Changing how documentation is resourced and prioritised requires changing how it's perceived. That's harder than building the system.
+
+The argument that usually lands with engineering leadership is the maintenance cost framing: undocumented processes and outdated content aren't free — they generate support load, onboarding time, and decision delays that show up somewhere in the organisation's capacity. Documentation systems that stay accurate reduce that load. Ones that don't, increase it.
+
+The argument that lands with product leadership is the dependency framing: if documentation is a dependency of the product — which it is, for any product with users who need to understand how to use it — then its quality and accuracy are product quality attributes, not documentation team metrics.
+
+Neither argument is new. But in practice, they need to be made repeatedly, at the right level, with the right evidence. That's as much the job as the writing.

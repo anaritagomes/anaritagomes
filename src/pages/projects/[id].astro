@@ -1,0 +1,38 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const formatted = entry.data.date.toLocaleDateString('en-GB', { year: 'numeric', month: 'long' });
+---
+
+<Base title={`${entry.data.title} — Ana Rita Gomes`} description={entry.data.description}>
+  <article class="py-20">
+    <header class="mb-14 max-w-[70ch]">
+      <div class="flex gap-3 mb-6 flex-wrap">
+        {entry.data.tags.map((t) => (
+          <span class="font-mono text-xs text-[#c0392b] border border-[#c0392b]/30 px-2 py-0.5">{t}</span>
+        ))}
+      </div>
+      <h1 class="text-3xl font-semibold text-[#e8e8f0] leading-tight mb-4">{entry.data.title}</h1>
+      <p class="text-[#6b6b80] text-sm font-mono">{formatted}</p>
+    </header>
+
+    <div class="prose prose-invert max-w-[70ch]
+      prose-headings:font-semibold prose-headings:text-[#e8e8f0]
+      prose-a:text-[#c0392b] prose-a:no-underline hover:prose-a:underline
+      prose-code:font-mono prose-code:text-sm
+      prose-pre:bg-[#111118] prose-pre:border prose-pre:border-[#1e1e2a]">
+      <Content />
+    </div>
+  </article>
+</Base>

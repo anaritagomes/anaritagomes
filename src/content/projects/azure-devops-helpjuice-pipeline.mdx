@@ -1,0 +1,81 @@
+---
+title: "Azure DevOps to Helpjuice: automating release note production"
+date: 2024-06-01
+description: "Designed and built a Python + Power Automate pipeline that reads work items from Azure DevOps and publishes structured release notes to Helpjuice via REST API, removing a high-friction manual step from the release process."
+tags: ["python", "rest api", "azure devops", "automation", "helpjuice"]
+featured: true
+---
+
+## Problem
+
+Release notes at Constellation Automotive Group were produced manually. After each release, someone — usually me — would pull work items from Azure DevOps, reformat them into documentation structure, and publish them to Helpjuice. For 10 products, across frequent release cadences, this was a significant recurring time cost.
+
+The manual step also introduced inconsistency. Different people formatting the same type of information differently. Fields missed. Delays between release and documentation publication.
+
+## Approach
+
+The core of the problem was a data transformation and publishing problem, not a writing problem. The information existed in Azure DevOps; the structure it needed to land in was defined by Helpjuice. The gap was the pipeline between them.
+
+I designed the solution in two parts:
+
+**1. Data extraction and transformation (Python)**
+
+A Python script queries the Azure DevOps REST API for work items associated with a given release. It filters by type (feature, bug fix, change), extracts the relevant fields, and transforms them into the structure required for the Helpjuice article format — structured HTML with consistent headings, tag assignments, and section ordering.
+
+```python
+# Simplified example — actual implementation handles pagination,
+# authentication, and multi-product routing
+def fetch_release_items(org, project, iteration_path, pat):
+    url = f"https://dev.azure.com/{org}/{project}/_apis/wit/wiql?api-version=7.0"
+    query = {
+        "query": f"""
+            SELECT [System.Id], [System.Title], [System.WorkItemType], [System.Description]
+            FROM WorkItems
+            WHERE [System.IterationPath] = '{iteration_path}'
+            AND [System.WorkItemType] IN ('Feature', 'Bug', 'Change')
+        """
+    }
+    response = requests.post(url, json=query, auth=HTTPBasicAuth('', pat))
+    response.raise_for_status()
+    return response.json()["workItems"]
+```
+
+**2. Publishing trigger (Power Automate)**
+
+Rather than scheduling the Python script independently, the trigger is a Power Automate flow that fires on a release event in Azure DevOps. The flow passes the relevant iteration path and product identifier to the Python script (hosted as an Azure Function), which handles extraction, transformation, and publishing to the Helpjuice API.
+
+This keeps the business logic in Python — where it's testable and version-controlled — while using Power Automate for the event integration, which avoids the need to manage a separate webhook listener.
+
+## Helpjuice API integration
+
+Helpjuice's REST API supports article creation and update. The script checks whether an article for the given release already exists (by querying on title pattern + category), and either creates or updates accordingly. This makes the pipeline idempotent — re-running for a release doesn't produce duplicates.
+
+```python
+def publish_to_helpjuice(api_key, category_id, title, body_html):
+    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+    # Check for existing article
+    existing = get_article_by_title(api_key, title)
+    if existing:
+        url = f"https://app.helpjuice.com/api/v2/articles/{existing['id']}"
+        method = requests.put
+    else:
+        url = "https://app.helpjuice.com/api/v2/articles"
+        method = requests.post
+
+    payload = {"article": {"name": title, "answer": body_html, "category_id": category_id}}
+    response = method(url, json=payload, headers=headers)
+    response.raise_for_status()
+    return response.json()
+```
+
+## Outcome
+
+The pipeline eliminated the manual release note production step for the products it covers. Publication now happens as part of the release process rather than after it, which reduced the time between release and documentation availability significantly.
+
+More importantly, the format is now consistent across products. The transformation logic is the single source of truth for how release information gets presented — not individual writer judgement applied under time pressure.
+
+## What I'd do differently
+
+The Power Automate trigger works but couples the pipeline to the specific flow structure. A better design would be a webhook endpoint that handles the trigger logic directly — more testable, easier to debug. The Azure Function approach gets there partially, but the flow still contains decision logic it shouldn't own.
+
+The Helpjuice title-matching heuristic for detecting existing articles is also fragile. A more robust approach would store a release-to-article-ID mapping externally — a simple key-value store would be sufficient — and use that for update routing instead of string matching.
