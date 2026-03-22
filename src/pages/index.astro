@@ -16,7 +16,7 @@ const base = import.meta.env.BASE_URL;
 <Base title="Ana Rita Gomes — Knowledge Architect">
   <!-- Hero -->
   <section class="pt-28 pb-24 max-w-[70ch]">
-    <p class="font-mono text-[#c0392b] text-sm mb-6 tracking-wide uppercase">
+    <p class="font-mono text-[#7B35E4] text-sm mb-6 tracking-wide uppercase">
       Knowledge Architecture · Technical Writing · Systems Engineering
     </p>
     <h1 class="text-4xl font-semibold text-[#e8e8f0] leading-tight mb-8">
@@ -31,7 +31,7 @@ const base = import.meta.env.BASE_URL;
     <div class="flex gap-4 flex-wrap">
       <a
         href={`${base}/projects`}
-        class="inline-block bg-[#c0392b] text-[#e8e8f0] text-sm font-medium px-5 py-2.5 hover:bg-[#8b2b20] transition-colors"
+        class="inline-block bg-[#7B35E4] text-[#e8e8f0] text-sm font-medium px-5 py-2.5 hover:bg-[#5a24a8] transition-colors"
       >
         View projects
       </a>
@@ -52,7 +52,7 @@ const base = import.meta.env.BASE_URL;
     <section class="mb-20">
       <div class="flex items-baseline justify-between mb-10">
         <h2 class="text-xs font-mono uppercase tracking-widest text-[#6b6b80]">Recent articles</h2>
-        <a href={`${base}/articles`} class="text-xs text-[#c0392b] hover:underline font-mono">All articles →</a>
+        <a href={`${base}/articles`} class="text-xs text-[#7B35E4] hover:underline font-mono">All articles →</a>
       </div>
       <div class="flex flex-col gap-10">
         {articles.map((a) => {
@@ -60,7 +60,7 @@ const base = import.meta.env.BASE_URL;
           return (
             <div class="group">
               <a href={`${base}/articles/${a.id}`} class="no-underline">
-                <h3 class="text-[#e8e8f0] font-medium mb-1 group-hover:text-[#c0392b] transition-colors">
+                <h3 class="text-[#e8e8f0] font-medium mb-1 group-hover:text-[#7B35E4] transition-colors">
                   {a.data.title}
                 </h3>
               </a>
@@ -78,15 +78,15 @@ const base = import.meta.env.BASE_URL;
     <section class="mb-20">
       <div class="flex items-baseline justify-between mb-10">
         <h2 class="text-xs font-mono uppercase tracking-widest text-[#6b6b80]">Selected work</h2>
-        <a href={`${base}/projects`} class="text-xs text-[#c0392b] hover:underline font-mono">All projects →</a>
+        <a href={`${base}/projects`} class="text-xs text-[#7B35E4] hover:underline font-mono">All projects →</a>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {projects.map((p) => (
           <a
             href={`${base}/projects/${p.id}`}
-            class="block border border-[#1e1e2a] p-6 hover:border-[#c0392b]/40 transition-colors group no-underline"
+            class="block border border-[#1e1e2a] p-6 hover:border-[#7B35E4]/40 transition-colors group no-underline"
           >
-            <h3 class="text-[#e8e8f0] font-medium mb-2 group-hover:text-[#c0392b] transition-colors">
+            <h3 class="text-[#e8e8f0] font-medium mb-2 group-hover:text-[#7B35E4] transition-colors">
               {p.data.title}
             </h3>
             <p class="text-[#6b6b80] text-sm leading-relaxed mb-4">{p.data.description}</p>

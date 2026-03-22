@@ -11,7 +11,7 @@ const base = import.meta.env.BASE_URL;
 <Base title="Projects — Ana Rita Gomes" description="Case studies in documentation systems, automation pipelines, and knowledge governance.">
   <div class="py-20">
     <header class="mb-16 max-w-[70ch]">
-      <p class="font-mono text-[#c0392b] text-xs uppercase tracking-widest mb-4">Work</p>
+      <p class="font-mono text-[#7B35E4] text-xs uppercase tracking-widest mb-4">Work</p>
       <h1 class="text-3xl font-semibold text-[#e8e8f0] mb-4">Projects</h1>
       <p class="text-[#6b6b80]">
         Selected case studies across automation engineering, documentation governance, and knowledge system design.
@@ -22,12 +22,12 @@ const base = import.meta.env.BASE_URL;
       {projects.map((p) => (
         <a
           href={`${base}/projects/${p.id}`}
-          class="block border border-[#1e1e2a] p-7 hover:border-[#c0392b]/40 transition-colors group no-underline"
+          class="block border border-[#1e1e2a] p-7 hover:border-[#7B35E4]/40 transition-colors group no-underline"
         >
           {p.data.featured && (
-            <p class="font-mono text-xs text-[#c0392b] uppercase tracking-widest mb-3">Featured</p>
+            <p class="font-mono text-xs text-[#7B35E4] uppercase tracking-widest mb-3">Featured</p>
           )}
-          <h2 class="text-[#e8e8f0] font-medium text-base mb-3 group-hover:text-[#c0392b] transition-colors leading-snug">
+          <h2 class="text-[#e8e8f0] font-medium text-base mb-3 group-hover:text-[#7B35E4] transition-colors leading-snug">
             {p.data.title}
           </h2>
           <p class="text-[#6b6b80] text-sm leading-relaxed mb-5">{p.data.description}</p>

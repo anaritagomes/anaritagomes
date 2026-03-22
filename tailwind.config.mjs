@@ -4,11 +4,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: '#0a0a0f',
-        surface: '#111118',
+        bg: '#000000',
+        surface: '#0a0a0a',
         border: '#1e1e2a',
-        accent: '#c0392b',
-        'accent-dim': '#8b2b20',
+        accent: '#7B35E4',
+        'accent-dim': '#5a24a8',
+        'accent-pink': '#FF69B4',
+        'accent-yellow': '#F5E88C',
         ink: '#e8e8f0',
         muted: '#6b6b80',
       },
