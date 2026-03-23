@@ -17,6 +17,11 @@ const formatted = entry.data.date.toLocaleDateString('en-GB', { year: 'numeric',
 
 <Base title={`${entry.data.title} — Ana Rita Gomes`} description={entry.data.description}>
   <article class="py-20">
+    {entry.data.image && (
+      <div class="max-w-[70ch] mb-12 border border-[#1e1e2a] overflow-hidden">
+        <img src={`${import.meta.env.BASE_URL}${entry.data.image}`} alt="" class="w-full" />
+      </div>
+    )}
     <header class="mb-14 max-w-[70ch]">
       <div class="flex gap-3 mb-6 flex-wrap">
         {entry.data.tags.map((t) => (
