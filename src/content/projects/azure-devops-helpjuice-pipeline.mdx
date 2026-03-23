@@ -41,10 +41,10 @@ ORDER BY [System.Id]
 
 **2. Publishing trigger (Power Automate)**
 
-We use PowerAutomate to automatically extract the result set of the Azure query, write it in an excel file, and send it to us via email.
+I use Power Automate to automatically extract the result set of the Azure query, write it to an Excel file, and send it via email.
 
-For products that have a fixed release cadence, we know when the board "closes" and at what time we can start producing the release notes.
-Let's consider a product whose sprint review happens biweekly on Fridays and ends at 13h. Our PowerAutomate flow would look like this:
+For products with a fixed release cadence, I know when the board "closes" and at what time I can start producing the release notes.
+Take a product whose sprint review happens biweekly on Fridays and ends at 13:00. The Power Automate flow looks like this:
 
 ```
 [1] Recurrence         — triggers biweekly, Fridays at 13:00
@@ -74,7 +74,7 @@ The output at this point is a complete, structured article. In practice it still
 
 ## Outcome
 
-The pipeline is live for several products, publishing directly to our internal Helpjuice knowledge base. It isn't perfect. RN Description quality depends on the engineers writing it, and the manual review step before publication means it hasn't fully removed human time from the process, just repositioned it. The time now goes on judgment, not mechanics.
+The pipeline is live for several products, publishing directly to the internal Helpjuice knowledge base. It isn't perfect. RN Description quality depends on the engineers writing it, and the manual review step before publication means it hasn't fully removed human time from the process, just repositioned it. The time now goes on judgment, not mechanics.
 
 The broader effect was organisational. Having a working pipeline made it easier to argue for the process changes that make automation sustainable: requiring RN Description on relevant work items, defining what "release-ready" means before the sprint closes, establishing who reviews before publish. The automation created leverage for governance conversations that hadn't been possible before.
 
