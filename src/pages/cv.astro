@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+const base = import.meta.env.BASE_URL;
 ---
 
 <Base title="CV — Ana Rita Gomes" description="CV and professional background of Ana Rita Gomes.">
@@ -11,7 +12,7 @@ import Base from '../layouts/Base.astro';
         Knowledge Architect · Technical Writer · Former Software Engineer
       </p>
       <a
-        href="/cv.pdf"
+        href={`${base}/cv.pdf`}
         download
         class="inline-flex items-center gap-2 bg-[#7B35E4] text-[#e8e8f0] text-sm font-medium px-5 py-2.5 hover:bg-[#5a24a8] transition-colors"
       >
