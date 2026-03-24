@@ -23,12 +23,28 @@ const base = import.meta.env.BASE_URL;
       Ana Rita Gomes
     </h1>
     <p class="text-[#e8e8f0] text-xl leading-relaxed mb-6">
-      Hi, I'm Rita! 👋
+      I spent a decade as a software engineer before realising the systems I cared most about were the ones that helped people understand things.
     </p>
     <p class="text-[#6b6b80] text-base leading-relaxed mb-10">
-      I'm currently a Technical Writer. I was a software engineer for nearly a decade, and somewhere along the way I got more interested in how teams share what they know than in the code itself.
-That curiosity turned into a career I genuinely like — building documentation systems.
+      Now I build documentation infrastructure — governance frameworks, automation pipelines, knowledge architecture — at the scale where it actually matters. MSc in AI from Leeds. Based in Portugal, working remotely.
     </p>
+
+    <!-- Impact stats -->
+    <div class="grid grid-cols-3 gap-4 mb-10 border border-[#1e1e2a] p-6">
+      <div>
+        <p class="font-mono text-2xl font-semibold text-[#e8e8f0] mb-1">2,000+</p>
+        <p class="font-mono text-xs text-[#6b6b80] uppercase tracking-wide">articles managed</p>
+      </div>
+      <div>
+        <p class="font-mono text-2xl font-semibold text-[#e8e8f0] mb-1">10</p>
+        <p class="font-mono text-xs text-[#6b6b80] uppercase tracking-wide">products documented</p>
+      </div>
+      <div>
+        <p class="font-mono text-2xl font-semibold text-[#7B35E4] mb-1">~9 yrs</p>
+        <p class="font-mono text-xs text-[#6b6b80] uppercase tracking-wide">engineering background</p>
+      </div>
+    </div>
+
     <div class="flex gap-4 flex-wrap">
       <a
         href={`${base}/projects`}
@@ -42,6 +58,44 @@ That curiosity turned into a career I genuinely like — building documentation 
       >
         Download CV
       </a>
+    </div>
+  </section>
+
+  <!-- Divider -->
+  <div class="border-t border-[#1e1e2a] mb-20"></div>
+
+  <!-- Stack -->
+  <section class="mb-20">
+    <h2 class="text-xs font-mono uppercase tracking-widest text-[#6b6b80] mb-10">Stack</h2>
+    <div class="flex flex-col gap-6">
+
+      <div class="flex flex-col gap-2">
+        <p class="font-mono text-xs text-[#3d3d55] uppercase tracking-widest">Docs & Knowledge</p>
+        <div class="flex flex-wrap gap-2">
+          {["Docusaurus", "Confluence", "Helpjuice", "MDX", "Markdown"].map(t => (
+            <span class="font-mono text-xs text-[#e8e8f0] border border-[#1e1e2a] px-3 py-1">{t}</span>
+          ))}
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <p class="font-mono text-xs text-[#3d3d55] uppercase tracking-widest">Engineering & Automation</p>
+        <div class="flex flex-wrap gap-2">
+          {["Python", "REST APIs", "Azure DevOps", "Power Automate", "Git", "GitHub Actions"].map(t => (
+            <span class="font-mono text-xs text-[#e8e8f0] border border-[#1e1e2a] px-3 py-1">{t}</span>
+          ))}
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <p class="font-mono text-xs text-[#3d3d55] uppercase tracking-widest">Practice</p>
+        <div class="flex flex-wrap gap-2">
+          {["Information Architecture", "Content Governance", "Docs-as-Code", "API Documentation", "Knowledge Operations"].map(t => (
+            <span class="font-mono text-xs text-[#7B35E4] border border-[#7B35E4]/30 px-3 py-1">{t}</span>
+          ))}
+        </div>
+      </div>
+
     </div>
   </section>
 
