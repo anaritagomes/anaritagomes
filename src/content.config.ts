@@ -21,6 +21,7 @@ const projects = defineCollection({
     date: z.coerce.date(),
     featured: z.boolean().optional().default(false),
     image: z.string().optional(),
+    diagram: z.string().optional(),
   }),
 });
 

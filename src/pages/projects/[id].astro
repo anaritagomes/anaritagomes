@@ -32,6 +32,12 @@ const formatted = entry.data.date.toLocaleDateString('en-GB', { year: 'numeric',
       <p class="text-[#6b6b80] text-sm font-mono">{formatted}</p>
     </header>
 
+    {entry.data.diagram && (
+      <div class="max-w-[70ch] mb-10 border border-[#1e1e2a] overflow-hidden">
+        <img src={`${import.meta.env.BASE_URL}${entry.data.diagram}`} alt="Architecture diagram" class="w-full" />
+      </div>
+    )}
+
     <div class="prose prose-invert max-w-[70ch]
       prose-headings:font-semibold prose-headings:text-[#e8e8f0]
       prose-a:text-[#7B35E4] prose-a:no-underline hover:prose-a:underline
