@@ -9,11 +9,9 @@ image: /images/projects/azure-devops-helpjuice-pipeline.svg
 
 ## Problem
 
-For as long as the process existed, release notes were produced the same way: open the Azure DevOps board, go through each work item one by one, figure out what it actually meant, and write it up as an accordion entry in a Helpjuice article. Then do it again for the next product. Then the next release.
+Release notes sit at an awkward intersection: structured enough that the process is always the same, but just complex enough that automating it never quite makes it onto the backlog. So they stay manual. Someone opens the board, reads through what shipped, writes it up, publishes it. Every release, every product, every cycle.
 
-Ten products releasing weekly. Each cycle taking upwards of two hours from opening the board to publishing. That's more than half a working week spent on a single repeatable task.
-
-The work itself wasn't difficult, and that was part of the problem. It was the kind of task that's easy enough to do but too structured to justify doing by hand indefinitely: pull the same fields, apply the same format, publish to the same place. Repeatable, manual, and just complex enough that it couldn't be handed off without explanation.
+The work isn't difficult. That's part of the problem. It's the kind of task where the time cost is real but the individual steps feel too small to justify a proper fix — pull the same fields, apply the same format, publish to the same place. It accumulates quietly until it's taking up a meaningful chunk of someone's week.
 
 The deeper issue was what happened when the process slipped. Documentation publishing wasn't gated on the release — it happened after, when someone got to it. A product ships; the release notes follow hours or days later. For support teams working from the knowledge base, or customers trying to understand what changed, that lag has a real cost. They're looking at a knowledge base that doesn't yet reflect the product they're using.
 
