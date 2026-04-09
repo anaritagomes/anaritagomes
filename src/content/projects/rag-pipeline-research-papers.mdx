@@ -1,0 +1,57 @@
+---
+title: "Local RAG Pipeline for AI Research Papers"
+description: "A fully local retrieval-augmented generation system that answers questions grounded in seminal AI papers — no API calls, no cloud, no hallucination."
+date: 2025-03-01
+tags: ["Python", "LangChain", "ChromaDB", "RAG", "LLMs"]
+github: "https://github.com/anaritagomes/llm-rag-papers"
+---
+
+## What it does
+
+Given a question like *"What is the attention mechanism?"* or *"How does chain-of-thought prompting work?"*, this pipeline retrieves the most relevant excerpts from a curated set of AI research papers and generates a grounded answer — citing its sources, refusing to speculate beyond them.
+
+The five papers indexed:
+
+- *Attention Is All You Need* — Vaswani et al., 2017
+- *Language Models Are Few-Shot Learners* (GPT-3) — Brown et al., 2020
+- *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks* — Lewis et al., 2020
+- *Chain-of-Thought Prompting Elicits Reasoning in LLMs* — Wei et al., 2022
+- *Sequence to Sequence Learning with Neural Networks* — Sutskever et al., 2014
+
+## Architecture
+
+The pipeline has two phases:
+
+**Ingest (one-time)**
+PDFs are loaded, split into 500-character chunks with 50-character overlap, embedded using `all-MiniLM-L6-v2`, and stored in a local ChromaDB vector database. The result: 607 chunks, persisted to disk.
+
+**Query (interactive)**
+A question is embedded with the same model, then used to retrieve the top 4 most semantically similar chunks from ChromaDB. Those chunks are injected into a prompt and sent to a locally-running LLM via LM Studio's OpenAI-compatible API. The answer is returned with source attribution.
+
+Nothing leaves the machine at any point.
+
+## Key decisions
+
+**Chunking: 500 chars, 50-char overlap.**
+`RecursiveCharacterTextSplitter` splits on paragraph and sentence boundaries before character boundaries. The 10% overlap ensures sentences spanning chunk edges aren't silently dropped.
+
+**Embedding model: `all-MiniLM-L6-v2`.**
+22 MB, runs on CPU, trained on over a billion sentence pairs. Sufficient for semantic search over curated academic text — and produces no API dependencies or egress.
+
+**Retrieval: k=4 chunks.**
+Four chunks is roughly 2,000 characters — enough context for a coherent answer without overwhelming the LLM's context window or diluting retrieval precision.
+
+**Temperature: 0.2.**
+Low randomness keeps answers factual and reproducible. A Q&A system over research papers has no use for creativity.
+
+**LLM runtime: LM Studio + GGUF.**
+Avoids CUDA dependencies. Any quantised model that fits in RAM works; the project was tested with DeepSeek-R1-Distill-Llama-8B.
+
+## Stack
+
+- Python 3.10+
+- LangChain + LangChain-Community
+- ChromaDB (SQLite-backed, HNSW index)
+- `sentence-transformers/all-MiniLM-L6-v2`
+- LM Studio (local OpenAI-compatible API)
+- PyPDF
