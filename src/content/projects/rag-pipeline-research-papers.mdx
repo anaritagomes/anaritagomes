@@ -48,6 +48,32 @@ Low randomness keeps answers factual and reproducible. A Q&A system over researc
 **LLM runtime: LM Studio + GGUF.**
 Avoids CUDA dependencies. Any quantised model that fits in RAM works; the project was tested with DeepSeek-R1-Distill-Llama-8B.
 
+## Examples
+
+```
+You: What is the attention mechanism?
+
+Answer: The attention mechanism allows the model to weigh the relevance of
+each input token when producing each output token. Rather than compressing
+the entire input into a fixed-length vector, attention computes a weighted
+sum over all encoder hidden states, using learned query, key, and value
+projections to determine relevance.
+
+Sources: NIPS-2017-attention-is-all-you-need-Paper.pdf
+```
+
+```
+You: What is chain-of-thought prompting and why does it help?
+
+Answer: Chain-of-thought prompting encourages a language model to produce
+intermediate reasoning steps before giving a final answer. Wei et al. show
+that this significantly improves performance on arithmetic and commonsense
+reasoning tasks, particularly in larger models — the benefit is minimal
+below ~100B parameters.
+
+Sources: chain-of-thought-prompting.pdf
+```
+
 ## Stack
 
 - Python 3.10+
@@ -56,3 +82,5 @@ Avoids CUDA dependencies. Any quantised model that fits in RAM works; the projec
 - `sentence-transformers/all-MiniLM-L6-v2`
 - LM Studio (local OpenAI-compatible API)
 - PyPDF
+
+[View on GitHub](https://github.com/anaritagomes/llm-rag-papers)
