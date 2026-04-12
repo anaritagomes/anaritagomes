@@ -10,19 +10,19 @@ draft: false
 
 ---
 
-Language models are parametric. Everything they know is encoded in weights fixed at training time. There is no mechanism for them to access new information at inference — no lookup, no retrieval, no awareness that the world has changed since the training cut-off.
+Language models are parametric. Everything they know is encoded in weights fixed at training time. There is no mechanism for them to access new information at inference: no lookup, no retrieval, no awareness that the world has changed since the training cut-off.
 
-For general reasoning, that's fine. The problem surfaces the moment you need current, organisation-specific, or private knowledge. The model cannot tell you what changed in last week's release. It cannot cite your internal policy. It will generate an answer regardless — and the answer will be wrong in a way that is difficult to detect, because it will read like a reasonable response.
+For general reasoning, that's fine. The problem surfaces the moment you need current, organisation-specific, or private knowledge. The model cannot tell you what changed in last week's release. It cannot cite your internal policy. It will generate an answer regardless, and the answer will be wrong in a way that is difficult to detect, because it will read like a reasonable response.
 
-RAG is the standard architectural fix. Rather than encoding knowledge in the model, you retrieve it at query time from a source you control, and pass it to the model as context. The model's weights stay unchanged. The knowledge layer is external, updatable, and auditable.
+RAG is the standard architectural fix. Rather than encoding knowledge in the model, you retrieve it at query time from a source you control and pass it to the model as context. The model's weights stay unchanged. The knowledge layer is external, updatable, and auditable.
 
-This article explains the full pipeline — chunking, embedding, retrieval, and generation — including the mathematics.
+This article explains the full pipeline: chunking, embedding, retrieval, and generation, including the mathematics.
 
 ---
 
 ## The problem RAG solves
 
-A large language model is, at its core, a function that maps a sequence of tokens to a probability distribution over the next token. The base model has no memory between conversations. It receives a prompt, produces a response, and retains nothing. Any appearance of memory in AI products is built on top — conversation history passed explicitly, external databases, retrieval systems. All infrastructure layered around the model. And it has no live access to external data. Everything it knows was baked in during training — and training is expensive, slow, and finite.
+A large language model is, at its core, a function that maps a sequence of tokens to a probability distribution over the next token. The base model has no memory between conversations. It receives a prompt, produces a response, and retains nothing. Any appearance of memory in AI products is built on top: conversation history passed explicitly, external databases, retrieval systems. All infrastructure layered around the model. And it has no live access to external data. Everything it knows was baked in during training, and training is expensive, slow, and finite.
 
 Your knowledge base is updated constantly. A model trained six months ago knows nothing about any of it. Fine-tuning on new data is one solution, but it is costly, requires labelled data, and needs to be repeated every time anything changes.
 
@@ -34,7 +34,7 @@ RAG sidesteps this entirely. Instead of updating the model, you update the data 
 
 ## The two pipelines
 
-A RAG system has two distinct pipelines that share a single data structure — the vector store — as their meeting point.
+A RAG system has two distinct pipelines that share a single data structure, the vector store, as their meeting point.
 
 **The indexing pipeline** runs once at setup, then incrementally when documents change. It takes your raw documents and turns them into something a retrieval system can search semantically.
 
@@ -46,21 +46,21 @@ A RAG system has two distinct pipelines that share a single data structure — t
 
 ### Step 1: Chunking
 
-Documents cannot be indexed whole. A 40-page policy document cannot be stuffed into a single vector — the granularity would be too coarse for useful retrieval. Documents are split into chunks: overlapping passages of fixed size.
+Documents cannot be indexed whole. A 40-page policy document cannot be stuffed into a single vector; the granularity would be too coarse for useful retrieval. Documents are split into chunks: overlapping passages of fixed size.
 
 A common configuration is 500 characters per chunk with a 50-character overlap. The overlap matters: a sentence spanning a chunk boundary is not silently dropped. Without overlap, you lose information at every seam.
 
-The splitter used in most implementations — including LangChain's `RecursiveCharacterTextSplitter` — respects semantic boundaries. It tries to split on paragraph breaks first, then sentence breaks, then character boundaries. This produces chunks that are more likely to contain coherent units of meaning rather than arbitrary text slices.
+The splitter used in most implementations, including LangChain's `RecursiveCharacterTextSplitter`, respects semantic boundaries. It tries to split on paragraph breaks first, then sentence breaks, then character boundaries. This produces chunks that are more likely to contain coherent units of meaning rather than arbitrary text slices.
 
 ![Chunking with overlap](/images/articles/rag-chunking.svg)
 
 ### Step 2: Embedding
 
-Each chunk is converted into a vector — a list of numbers — by an embedding model.
+Each chunk is converted into a vector, a list of numbers, by an embedding model.
 
 An embedding model is a neural network trained to map text to a point in a high-dimensional vector space such that **semantically similar text maps to nearby points**. "What is the refund policy?" and "How do I get my money back?" will produce vectors that are close together, even though they share no words.
 
-A typical embedding model produces vectors of 384 dimensions (the `all-MiniLM-L6-v2` model) or 1536 dimensions (OpenAI's `text-embedding-3-small`). Each dimension captures some learned aspect of semantic meaning — though the dimensions are not individually interpretable.
+A typical embedding model produces vectors of 384 dimensions (the `all-MiniLM-L6-v2` model) or 1536 dimensions (OpenAI's `text-embedding-3-small`). Each dimension captures some learned aspect of semantic meaning, though the dimensions are not individually interpretable.
 
 Formally, given a chunk of text $t$, the embedding model $E$ produces:
 
@@ -70,9 +70,9 @@ Where $d$ is the dimensionality of the embedding space (e.g., 384).
 
 ### Step 3: Storage in a vector database
 
-The resulting vectors are stored in a vector database — ChromaDB, Pinecone, Weaviate, FAISS — alongside the original text of each chunk and any metadata (source file, creation date, document type, section heading).
+The resulting vectors are stored in a vector database (ChromaDB, Pinecone, Weaviate, FAISS) alongside the original text of each chunk and any metadata: source file, creation date, document type, section heading.
 
-The vector database builds an index structure — typically HNSW (Hierarchical Navigable Small World graphs) — that allows approximate nearest-neighbour search at scale. This is what makes retrieval fast even over millions of chunks.
+The vector database builds an index structure, typically HNSW (Hierarchical Navigable Small World graphs), that allows approximate nearest-neighbour search at scale. This is what makes retrieval fast even over millions of chunks.
 
 ---
 
@@ -96,7 +96,7 @@ Where:
 - $a \cdot b$ is the dot product: the sum of element-wise products
 - $\|a\|$ is the Euclidean norm of $a$: the square root of the sum of squared elements
 
-Cosine similarity measures the angle between two vectors, not their magnitude. Two chunks that are semantically identical will produce vectors pointing in the same direction — cosine similarity of 1.0 — regardless of how long the text was. Two completely unrelated chunks will point in orthogonal directions — cosine similarity near 0.
+Cosine similarity measures the angle between two vectors, not their magnitude. Two chunks that are semantically identical will produce vectors pointing in the same direction, with a cosine similarity of 1.0, regardless of how long the text was. Two completely unrelated chunks will point in orthogonal directions, with a cosine similarity near 0.
 
 ![Cosine similarity in vector space](/images/articles/rag-cosine.svg)
 
@@ -124,15 +124,15 @@ Answer:
 
 ### Step 4: Generation
 
-The language model receives the prompt and generates a response — synthesising the retrieved evidence into a coherent, readable answer.
+The language model receives the prompt and generates a response, synthesising the retrieved evidence into a coherent, readable answer.
 
 The generation is controlled by a temperature parameter *T*, which scales the logits before the softmax function converts them to a probability distribution over tokens:
 
 $$P(\text{token}_i) = \frac{\exp(\text{logit}_i / T)}{\sum_j \exp(\text{logit}_j / T)}$$
 
-At *T* = 1.0, the distribution follows the model's trained probabilities. At *T* → 0, it collapses — the model always picks the most probable token. At *T* > 1.0, it flattens — the model becomes more random.
+At *T* = 1.0, the distribution follows the model's trained probabilities. At *T* → 0, it collapses and the model always picks the most probable token. At *T* > 1.0, it flattens and the model becomes more random.
 
-For a Q&A system grounded in documentation, you want low temperature — typically 0.1 to 0.2. There is no value in creativity when accuracy is the goal.
+For a Q&A system grounded in documentation, you want low temperature, typically 0.1 to 0.2. There is no value in creativity when accuracy is the goal.
 
 ---
 
@@ -142,23 +142,23 @@ Here is the part that almost every technical discussion of RAG omits.
 
 The mathematics above is correct. The pipeline works as described. But none of it helps if the source material is poor.
 
-Cosine similarity finds the chunks that are *most similar* to the query — not the chunks that are *correct*. If your knowledge base contains three versions of the same policy, all slightly different, the retrieval system will return whichever one scores highest. It has no mechanism for resolving contradictions. It will surface a confident answer grounded in a document that may be outdated, wrong, or both.
+Cosine similarity finds the chunks that are *most similar* to the query, not the chunks that are *correct*. If your knowledge base contains three versions of the same policy, all slightly different, the retrieval system will return whichever one scores highest. It has no mechanism for resolving contradictions. It will surface a confident answer grounded in a document that may be outdated, wrong, or both.
 
-If your articles are vague, retrieval returns vague chunks. The model synthesises those into a fluent answer that sounds authoritative. The output reads like a reasonable response — which makes the wrongness hard to catch.
+If your articles are vague, retrieval returns vague chunks. The model synthesises those into a fluent answer that sounds authoritative. The output reads like a reasonable response, which makes the wrongness hard to catch.
 
 The failure mode lives in the knowledge base.
 
-Document structure matters too, in ways most implementations ignore. A chunk that begins mid-sentence, lacks a section heading, and contains no metadata about its source will retrieve poorly — the embedding is less precise because the surrounding context that gives meaning to the words is absent. Well-structured documents, with consistent headings, clear scope, and explicit metadata, produce better embeddings and better retrieval.
+Document structure matters too, in ways most implementations ignore. A chunk that begins mid-sentence, lacks a section heading, and contains no metadata about its source will retrieve poorly. The embedding is less precise because the surrounding context that gives meaning to the words is absent. Well-structured documents, with consistent headings, clear scope, and explicit metadata, produce better embeddings and better retrieval.
 
-And: the index only reflects what was there at indexing time. A document updated yesterday is invisible to a RAG system that has not been re-indexed. Governance — who owns what, what the review cycle is, who triggers re-indexing when content changes — has to be figured out before the system can work. That part has nothing to do with the technology.
+And: the index only reflects what was there at indexing time. A document updated yesterday is invisible to a RAG system that has not been re-indexed. Governance, who owns what, what the review cycle is, who triggers re-indexing when content changes, has to be figured out before the system can work. That part has nothing to do with the technology.
 
 ---
 
 ## The shape of RAG in production
 
-Most organisations are not building RAG from scratch. The standard retrieval frameworks — FAISS, Elasticsearch, ChromaDB — handle the vector operations. Platforms like Elastic Enterprise Search, Pinecone, and Weaviate provide managed infrastructure. Orchestration layers like LangChain and LlamaIndex handle the pipeline wiring.
+Most organisations are not building RAG from scratch. The standard retrieval frameworks (FAISS, Elasticsearch, ChromaDB) handle the vector operations. Platforms like Elastic Enterprise Search, Pinecone, and Weaviate provide managed infrastructure. Orchestration layers like LangChain and LlamaIndex handle the pipeline wiring.
 
-What organisations are not getting from vendors is a knowledge base that is ready to be indexed. That work precedes deployment — and determines whether the system is useful or embarrassing.
+What organisations are not getting from vendors is a knowledge base that is ready to be indexed. That work precedes deployment and determines whether the system is useful or embarrassing.
 
 Before deploying a RAG-based assistant over your documentation, the question worth asking is: **is our content actually ready for this?**
 
