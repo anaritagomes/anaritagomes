@@ -1,0 +1,51 @@
+---
+const { src, alt, ...rest } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const resolvedSrc = src?.startsWith('/') ? `${base}${src}` : src;
+---
+
+<img
+  src={resolvedSrc}
+  alt={alt ?? ''}
+  {...rest}
+  class="w-full border border-[#1e1e2a] my-8 cursor-zoom-in"
+  data-zoomable
+/>
+
+<script>
+  document.querySelectorAll('img[data-zoomable]').forEach((img) => {
+    img.addEventListener('click', () => {
+      const overlay = document.createElement('div');
+      Object.assign(overlay.style, {
+        position: 'fixed',
+        inset: '0',
+        background: 'rgba(0,0,0,0.92)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: '9999',
+        cursor: 'zoom-out',
+        padding: '2rem',
+      });
+
+      const clone = document.createElement('img');
+      clone.src = (img as HTMLImageElement).src;
+      clone.alt = (img as HTMLImageElement).alt;
+      Object.assign(clone.style, {
+        maxWidth: '100%',
+        maxHeight: '90vh',
+        border: '1px solid #1e1e2a',
+        objectFit: 'contain',
+      });
+
+      overlay.appendChild(clone);
+      document.body.appendChild(overlay);
+
+      const close = () => overlay.remove();
+      overlay.addEventListener('click', close);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') close();
+      }, { once: true });
+    });
+  });
+</script>

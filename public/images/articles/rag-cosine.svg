@@ -1,0 +1,57 @@
+<svg width="720" height="320" viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg">
+  <rect width="720" height="320" fill="#0a0a0f"/>
+
+  <!-- Grid lines (subtle) -->
+  <line x1="260" y1="40" x2="260" y2="280" stroke="#111120" stroke-width="1"/>
+  <line x1="160" y1="270" x2="520" y2="270" stroke="#111120" stroke-width="1"/>
+
+  <!-- Axes -->
+  <line x1="260" y1="270" x2="260" y2="50" stroke="#1e1e2a" stroke-width="1"/>
+  <polygon points="256,52 260,42 264,52" fill="#1e1e2a"/>
+  <line x1="260" y1="270" x2="510" y2="270" stroke="#1e1e2a" stroke-width="1"/>
+  <polygon points="508,266 518,270 508,274" fill="#1e1e2a"/>
+  <text x="515" y="274" fill="#2e2e42" font-size="9" font-family="'JetBrains Mono', monospace">d₁</text>
+  <text x="264" y="46" fill="#2e2e42" font-size="9" font-family="'JetBrains Mono', monospace">d₂</text>
+  <text x="248" y="282" fill="#2e2e42" font-size="9" font-family="'JetBrains Mono', monospace">0</text>
+
+  <!-- Vector A: "What is the refund policy?" -->
+  <line x1="260" y1="270" x2="430" y2="100" stroke="#e8e8f0" stroke-width="1.5"/>
+  <polygon points="427,104 432,96 436,105" fill="#e8e8f0"/>
+  <text x="436" y="96" fill="#e8e8f0" font-size="9" font-family="'JetBrains Mono', monospace">a</text>
+  <text x="440" y="108" fill="#6b6b80" font-size="8" font-family="'JetBrains Mono', monospace">"What is the refund policy?"</text>
+
+  <!-- Vector B: "How do I get my money back?" (close to A) -->
+  <line x1="260" y1="270" x2="460" y2="120" stroke="#7B35E4" stroke-width="1.5"/>
+  <polygon points="456,124 462,116 466,125" fill="#7B35E4"/>
+  <text x="468" y="116" fill="#7B35E4" font-size="9" font-family="'JetBrains Mono', monospace">b</text>
+  <text x="472" y="128" fill="#6b6b80" font-size="8" font-family="'JetBrains Mono', monospace">"How do I get my money back?"</text>
+
+  <!-- Arc between A and B (small angle — similar) -->
+  <path d="M 310 222 Q 340 200 330 218" fill="none" stroke="#7B35E4" stroke-width="1" stroke-opacity="0.6" stroke-dasharray="3,3"/>
+  <text x="338" y="212" fill="#7B35E4" font-size="9" font-family="'JetBrains Mono', monospace" opacity="0.8">θ ≈ 10°</text>
+
+  <!-- cos(θ) ≈ 0.98 label -->
+  <text x="338" y="224" fill="#7B35E4" font-size="9" font-family="'JetBrains Mono', monospace" opacity="0.8">cos(θ) ≈ 0.98</text>
+
+  <!-- Vector C: "The capital of France" (far/orthogonal-ish) -->
+  <line x1="260" y1="270" x2="290" y2="90" stroke="#2e2e42" stroke-width="1.5"/>
+  <polygon points="286,93 290,82 294,93" fill="#2e2e42"/>
+  <text x="296" y="84" fill="#3d3d55" font-size="9" font-family="'JetBrains Mono', monospace">c</text>
+  <text x="148" y="84" fill="#3d3d55" font-size="8" font-family="'JetBrains Mono', monospace">"The capital of France"</text>
+  <text x="194" y="96" fill="#2e2e42" font-size="8" font-family="'JetBrains Mono', monospace">cos(θ) ≈ 0.05</text>
+
+  <!-- Divider -->
+  <line x1="560" y1="40" x2="560" y2="280" stroke="#1e1e2a" stroke-width="1" stroke-dasharray="1,8"/>
+
+  <!-- Explanation panel -->
+  <text x="576" y="60" fill="#6b6b80" font-size="9" font-family="'JetBrains Mono', monospace">cos(θ) = (a · b)</text>
+  <line x1="576" y1="66" x2="680" y2="66" stroke="#2e2e42" stroke-width="1"/>
+  <text x="600" y="78" fill="#6b6b80" font-size="9" font-family="'JetBrains Mono', monospace">‖a‖ · ‖b‖</text>
+
+  <text x="576" y="110" fill="#3d3d55" font-size="9" font-family="'JetBrains Mono', monospace">1.0  →  identical</text>
+  <text x="576" y="126" fill="#3d3d55" font-size="9" font-family="'JetBrains Mono', monospace">0.5  →  related</text>
+  <text x="576" y="142" fill="#3d3d55" font-size="9" font-family="'JetBrains Mono', monospace">0.0  →  unrelated</text>
+
+  <text x="576" y="175" fill="#2e2e42" font-size="8" font-family="'JetBrains Mono', monospace">measures angle,</text>
+  <text x="576" y="187" fill="#2e2e42" font-size="8" font-family="'JetBrains Mono', monospace">not magnitude</text>
+</svg>

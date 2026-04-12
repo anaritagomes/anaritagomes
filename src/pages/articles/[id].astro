@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import MdxImg from '../../components/MdxImg.astro';
 
 export async function getStaticPaths() {
   const articles = await getCollection('articles', ({ data }) => !data.draft);
@@ -20,5 +21,5 @@ const { Content } = await render(entry);
   description={entry.data.description}
   tags={entry.data.tags}
 >
-  <Content />
+  <Content components={{ img: MdxImg }} />
 </ArticleLayout>

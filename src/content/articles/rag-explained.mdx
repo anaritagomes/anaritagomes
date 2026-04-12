@@ -30,6 +30,8 @@ RAG sidesteps this entirely. Instead of updating the model, you update the data 
 
 ---
 
+![The two RAG pipelines: indexing and retrieval](/images/articles/rag-pipeline-overview.svg)
+
 ## The two pipelines
 
 A RAG system has two distinct pipelines that share a single data structure — the vector store — as their meeting point.
@@ -51,6 +53,8 @@ Documents cannot be indexed whole. A 40-page policy document cannot be stuffed i
 A common configuration is 500 characters per chunk with a 50-character overlap. The overlap matters: it ensures that a sentence spanning a chunk boundary is not silently dropped. Without overlap, you lose information at every seam.
 
 The splitter used in most implementations — including LangChain's `RecursiveCharacterTextSplitter` — respects semantic boundaries. It tries to split on paragraph breaks first, then sentence breaks, then character boundaries. This produces chunks that are more likely to contain coherent units of meaning rather than arbitrary text slices.
+
+![Chunking with overlap](/images/articles/rag-chunking.svg)
 
 ### Step 2: Embedding
 
@@ -101,6 +105,8 @@ Where:
 - `‖a‖` is the Euclidean norm of *a*: the square root of the sum of squared elements
 
 Cosine similarity measures the angle between two vectors, not their magnitude. Two chunks that are semantically identical will produce vectors pointing in the same direction — cosine similarity of 1.0 — regardless of how long the text was. Two completely unrelated chunks will point in orthogonal directions — cosine similarity near 0.
+
+![Cosine similarity in vector space](/images/articles/rag-cosine.svg)
 
 In practice, the vector database returns the top *k* chunks by cosine similarity to the query. A common value is *k* = 4. This is a deliberate tradeoff: more chunks provide more context but dilute retrieval precision and eventually overflow the language model's context window.
 
