@@ -10,13 +10,13 @@ draft: false
 
 ---
 
-There is a question that keeps surfacing in every organisation deploying AI right now: *why does the assistant confidently say something wrong?*
+Language models are parametric. Everything they know is encoded in weights fixed at training time. There is no mechanism for them to access new information at inference — no lookup, no retrieval, no awareness that the world has changed since the training cut-off.
 
-The answer is almost always the same. The model doesn't know what it doesn't know. It was trained on a snapshot of text up to a certain date, with no access to your internal policies, your product documentation, your release notes, or anything else your organisation has produced. When asked something it wasn't trained on, it doesn't say "I don't know." It generates the most statistically plausible answer — and delivers it with the same tone it uses when it's right.
+This is fine for general reasoning. It is a structural problem for anything that requires current, organisation-specific, or private knowledge. The model cannot tell you what changed in last week's release. It cannot cite your internal policy. It will generate an answer regardless — and the answer will be wrong in a way that is difficult to detect, because it will read like a reasonable response.
 
-Retrieval-Augmented Generation — RAG — is the architectural pattern that fixes this. It gives a language model access to a knowledge source at query time, so that answers are grounded in documents you control, not in whatever the model absorbed during training.
+RAG is the standard architectural fix. Rather than encoding knowledge in the model, you retrieve it at query time from a source you control, and pass it to the model as context. The model's weights stay unchanged. The knowledge layer is external, updatable, and auditable.
 
-This article explains exactly how it works. Including the mathematics.
+This article explains the full pipeline — chunking, embedding, retrieval, and generation — including the mathematics.
 
 ---
 
