@@ -64,13 +64,11 @@ An embedding model is a neural network trained to map text to a point in a high-
 
 A typical embedding model produces vectors of 384 dimensions (the `all-MiniLM-L6-v2` model) or 1536 dimensions (OpenAI's `text-embedding-3-small`). Each dimension captures some learned aspect of semantic meaning — though the dimensions are not individually interpretable.
 
-Formally, given a chunk of text *t*, the embedding model *E* produces:
+Formally, given a chunk of text $t$, the embedding model $E$ produces:
 
-```
-v = E(t) ∈ ℝᵈ
-```
+$$v = E(t) \in \mathbb{R}^d$$
 
-Where *d* is the dimensionality of the embedding space (e.g., 384).
+Where $d$ is the dimensionality of the embedding space (e.g., 384).
 
 ### Step 3: Storage in a vector database
 
@@ -86,9 +84,7 @@ The vector database builds an index structure — typically HNSW (Hierarchical N
 
 When a user submits a question, that question is embedded using **the same model** used to embed the documents. This is critical. If the documents were embedded with `all-MiniLM-L6-v2`, the query must be too. The semantic space only works if everything in it was mapped using the same function.
 
-```
-q = E(query) ∈ ℝᵈ
-```
+$$q = E(\text{query}) \in \mathbb{R}^d$$
 
 ### Step 2: Similarity search
 
@@ -96,13 +92,11 @@ The system now needs to find the *k* chunks whose vectors are closest to the que
 
 Cosine similarity between two vectors *a* and *b* is defined as:
 
-```
-cos(θ) = (a · b) / (‖a‖ · ‖b‖)
-```
+$$\cos(\theta) = \frac{a \cdot b}{\|a\| \cdot \|b\|}$$
 
 Where:
-- `a · b` is the dot product: the sum of element-wise products
-- `‖a‖` is the Euclidean norm of *a*: the square root of the sum of squared elements
+- $a \cdot b$ is the dot product: the sum of element-wise products
+- $\|a\|$ is the Euclidean norm of $a$: the square root of the sum of squared elements
 
 Cosine similarity measures the angle between two vectors, not their magnitude. Two chunks that are semantically identical will produce vectors pointing in the same direction — cosine similarity of 1.0 — regardless of how long the text was. Two completely unrelated chunks will point in orthogonal directions — cosine similarity near 0.
 
@@ -136,9 +130,7 @@ The language model receives the prompt and generates a response. This is where t
 
 The generation is controlled by a temperature parameter *T*, which scales the logits before the softmax function that converts them to a probability distribution over tokens:
 
-```
-P(token_i) = exp(logit_i / T) / Σⱼ exp(logit_j / T)
-```
+$$P(\text{token}_i) = \frac{\exp(\text{logit}_i / T)}{\sum_j \exp(\text{logit}_j / T)}$$
 
 At *T* = 1.0, the distribution follows the model's trained probabilities. At *T* → 0, the distribution collapses to a one-hot vector — the model always picks the most probable token, deterministically. At *T* > 1.0, the distribution flattens — the model becomes more random and creative.
 
