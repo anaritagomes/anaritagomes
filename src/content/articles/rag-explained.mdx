@@ -138,9 +138,7 @@ For a Q&A system grounded in documentation, you want low temperature, typically 
 
 ## Why this matters for knowledge architecture
 
-Here is the part that almost every technical discussion of RAG omits.
-
-The mathematics above is correct. The pipeline works as described. But none of it helps if the source material is poor.
+Good retrieval depends on good documents. That part is on you.
 
 Cosine similarity finds the chunks that are *most similar* to the query, not the chunks that are *correct*. If your knowledge base contains three versions of the same policy, all slightly different, the retrieval system will return whichever one scores highest. It has no mechanism for resolving contradictions. It will surface a confident answer grounded in a document that may be outdated, wrong, or both.
 
