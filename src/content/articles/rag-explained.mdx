@@ -1,0 +1,171 @@
+---
+title: "Retrieval-Augmented Generation, Explained"
+date: 2026-04-12
+description: "What it is, how it works, and why the math matters for knowledge people."
+tags: ["RAG", "AI", "knowledge architecture", "LLMs"]
+draft: false
+---
+
+*What it is, how it works, and why the math matters for knowledge people*
+
+---
+
+There is a question that keeps surfacing in every organisation deploying AI right now: *why does the assistant confidently say something wrong?*
+
+The answer is almost always the same. The model doesn't know what it doesn't know. It was trained on a snapshot of text up to a certain date, with no access to your internal policies, your product documentation, your release notes, or anything else your organisation has produced. When asked something it wasn't trained on, it doesn't say "I don't know." It generates the most statistically plausible answer — and delivers it with the same tone it uses when it's right.
+
+Retrieval-Augmented Generation — RAG — is the architectural pattern that fixes this. It gives a language model access to a knowledge source at query time, so that answers are grounded in documents you control, not in whatever the model absorbed during training.
+
+This article explains exactly how it works. Including the mathematics.
+
+---
+
+## The problem RAG solves
+
+A large language model is, at its core, a function that maps a sequence of tokens to a probability distribution over the next token. The base model has no memory between conversations. It receives a prompt, produces a response, and retains nothing. Any appearance of memory in AI products is built on top — conversation history passed explicitly, external databases, retrieval systems. It is infrastructure, not the model itself. And it has no live access to external data. Everything it knows was baked in during training — and training is expensive, slow, and finite.
+
+This creates a structural problem for knowledge work. Your knowledge base is updated constantly. Policies change. Products ship. Processes evolve. A model trained six months ago knows nothing about any of it. Fine-tuning the model on new data is one solution, but it is costly, requires labelled data, and needs to be repeated every time anything changes.
+
+RAG sidesteps this entirely. Instead of updating the model, you update the data it reads before it answers. The model stays the same. The knowledge source is what you maintain.
+
+---
+
+## The two pipelines
+
+A RAG system has two distinct pipelines that share a single data structure — the vector store — as their meeting point.
+
+**The indexing pipeline** runs once at setup, then incrementally when documents change. It takes your raw documents and turns them into something a retrieval system can search semantically.
+
+**The retrieval and generation pipeline** runs on every query. It takes a user's question, finds the most relevant content from the index, and passes both the question and the retrieved content to the language model.
+
+Let's go through each one precisely.
+
+---
+
+## The indexing pipeline
+
+### Step 1: Chunking
+
+Documents cannot be indexed whole. A 40-page policy document cannot be stuffed into a single vector — the granularity would be too coarse for useful retrieval. Instead, documents are split into chunks: overlapping passages of fixed size.
+
+A common configuration is 500 characters per chunk with a 50-character overlap. The overlap matters: it ensures that a sentence spanning a chunk boundary is not silently dropped. Without overlap, you lose information at every seam.
+
+The splitter used in most implementations — including LangChain's `RecursiveCharacterTextSplitter` — respects semantic boundaries. It tries to split on paragraph breaks first, then sentence breaks, then character boundaries. This produces chunks that are more likely to contain coherent units of meaning rather than arbitrary text slices.
+
+### Step 2: Embedding
+
+Each chunk is converted into a vector — a list of numbers — by an embedding model. This is where the mathematics becomes essential.
+
+An embedding model is a neural network trained to map text to a point in a high-dimensional vector space such that **semantically similar text maps to nearby points**. "What is the refund policy?" and "How do I get my money back?" will produce vectors that are close together, even though they share no words.
+
+A typical embedding model produces vectors of 384 dimensions (the `all-MiniLM-L6-v2` model) or 1536 dimensions (OpenAI's `text-embedding-3-small`). Each dimension captures some learned aspect of semantic meaning — though the dimensions are not individually interpretable.
+
+Formally, given a chunk of text *t*, the embedding model *E* produces:
+
+```
+v = E(t) ∈ ℝᵈ
+```
+
+Where *d* is the dimensionality of the embedding space (e.g., 384).
+
+### Step 3: Storage in a vector database
+
+The resulting vectors are stored in a vector database — ChromaDB, Pinecone, Weaviate, FAISS — alongside the original text of each chunk and any metadata (source file, creation date, document type, section heading).
+
+The vector database builds an index structure — typically HNSW (Hierarchical Navigable Small World graphs) — that allows approximate nearest-neighbour search at scale. This is what makes retrieval fast even over millions of chunks.
+
+---
+
+## The retrieval and generation pipeline
+
+### Step 1: Query embedding
+
+When a user submits a question, that question is embedded using **the same model** used to embed the documents. This is critical. If the documents were embedded with `all-MiniLM-L6-v2`, the query must be too. The semantic space only works if everything in it was mapped using the same function.
+
+```
+q = E(query) ∈ ℝᵈ
+```
+
+### Step 2: Similarity search
+
+The system now needs to find the *k* chunks whose vectors are closest to the query vector. The standard measure of closeness in this context is **cosine similarity**.
+
+Cosine similarity between two vectors *a* and *b* is defined as:
+
+```
+cos(θ) = (a · b) / (‖a‖ · ‖b‖)
+```
+
+Where:
+- `a · b` is the dot product: the sum of element-wise products
+- `‖a‖` is the Euclidean norm of *a*: the square root of the sum of squared elements
+
+Cosine similarity measures the angle between two vectors, not their magnitude. Two chunks that are semantically identical will produce vectors pointing in the same direction — cosine similarity of 1.0 — regardless of how long the text was. Two completely unrelated chunks will point in orthogonal directions — cosine similarity near 0.
+
+In practice, the vector database returns the top *k* chunks by cosine similarity to the query. A common value is *k* = 4. This is a deliberate tradeoff: more chunks provide more context but dilute retrieval precision and eventually overflow the language model's context window.
+
+### Step 3: Prompt construction
+
+The retrieved chunks are injected into a prompt template alongside the user's question. A minimal template looks like this:
+
+```
+You are a helpful assistant. Answer the question using only the context below.
+If the answer is not in the context, say you don't know.
+
+Context:
+{chunk_1}
+{chunk_2}
+{chunk_3}
+{chunk_4}
+
+Question: {user_question}
+Answer:
+```
+
+The constraint — "answer using only the context" — is what prevents hallucination. The model is instructed to treat the retrieved documents as its source of truth.
+
+### Step 4: Generation
+
+The language model receives the prompt and generates a response. This is where the model's generative capabilities do their actual work: synthesising the retrieved evidence into a coherent, readable answer.
+
+The generation is controlled by a temperature parameter *T*, which scales the logits before the softmax function that converts them to a probability distribution over tokens:
+
+```
+P(token_i) = exp(logit_i / T) / Σⱼ exp(logit_j / T)
+```
+
+At *T* = 1.0, the distribution follows the model's trained probabilities. At *T* → 0, the distribution collapses to a one-hot vector — the model always picks the most probable token, deterministically. At *T* > 1.0, the distribution flattens — the model becomes more random and creative.
+
+For a Q&A system grounded in documentation, you want low temperature — typically 0.1 to 0.2. There is no value in creativity when accuracy is the goal.
+
+---
+
+## Why this matters for knowledge architecture
+
+Here is the part that almost every technical discussion of RAG omits.
+
+The mathematics above is correct. The pipeline works as described. But none of it helps you if the source material is poor.
+
+Cosine similarity finds the chunks that are *most similar* to the query — not the chunks that are *correct*. If your knowledge base contains three versions of the same policy, all slightly different, the retrieval system will return whichever one happens to score highest. It has no mechanism for resolving contradictions. It will present a confident answer grounded in a document that may be outdated, wrong, or both.
+
+If your articles are vague, retrieval returns vague chunks. The language model synthesises those vague chunks into a fluent answer that sounds authoritative. The output is not wrong in a way that is easy to detect. It is wrong in a way that reads like a reasonable response.
+
+This is not an AI problem. It is a knowledge architecture problem.
+
+The chunking process is also sensitive to document structure in ways that most implementations ignore. A chunk that begins mid-sentence, lacks a section heading, and contains no metadata about its source will retrieve poorly — the embedding will be less precise because the surrounding context that gives meaning to the words is absent. Well-structured documents, with consistent headings, clear scope, and explicit metadata, produce better embeddings and better retrieval.
+
+And finally: the index only reflects what was there at indexing time. A document updated yesterday is invisible to a RAG system that has not been re-indexed. Governance — who owns what, what the review cycle is, who triggers re-indexing when content changes — is not an operational detail. It is a prerequisite for the system to work.
+
+---
+
+## The shape of RAG in production
+
+Most organisations are not building RAG from scratch. The standard retrieval frameworks — FAISS, Elasticsearch, ChromaDB — handle the vector operations. Platforms like Elastic Enterprise Search, Pinecone, and Weaviate provide managed infrastructure. Orchestration layers like LangChain and LlamaIndex handle the pipeline wiring.
+
+What organisations are not getting from vendors is a knowledge base that is ready to be indexed. That is the work that precedes deployment — and it is the work that determines whether the system is useful or embarrassing.
+
+The question to ask before your organisation deploys a RAG-based assistant over your documentation is not *which model should we use* or *which vector database should we choose*.
+
+It is: **is our content actually ready for this?**
+
+That is a question for knowledge people. And right now, most of them are not in the room.
