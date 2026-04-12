@@ -6,12 +6,13 @@ export interface Props {
   date: Date;
   description: string;
   tags: string[];
+  ogImage?: string;
 }
-const { title, date, description, tags } = Astro.props;
+const { title, date, description, tags, ogImage } = Astro.props;
 const formatted = date.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
 ---
 
-<Base title={`${title} — Ana Rita Gomes`} description={description}>
+<Base title={`${title} — Ana Rita Gomes`} description={description} ogImage={ogImage}>
   <article class="py-20">
     <header class="mb-14 max-w-[70ch]">
       <div class="flex gap-3 mb-6 flex-wrap">

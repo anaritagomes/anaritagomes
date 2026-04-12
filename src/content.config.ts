@@ -9,6 +9,7 @@ const articles = defineCollection({
     description: z.string(),
     tags: z.array(z.string()),
     draft: z.boolean().optional().default(false),
+    ogImage: z.string().optional(),
   }),
 });
 
